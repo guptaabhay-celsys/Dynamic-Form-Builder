@@ -69,6 +69,7 @@ export const formFile = [
         id: '5',
         type: 'button',
         value: 'Submit',
+        condition: {},
         action: () => {
             alert('Form has been submitted succcessfully!!!')
         },

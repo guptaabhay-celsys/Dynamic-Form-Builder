@@ -33,13 +33,13 @@ const FormFields = ({ fieldsData }) => {
       if (Object.keys(condition).length > 0) {
         if (type === 'text') {
           if (value.trim().length < (condition.minLength)) {
-            fieldErrors[id] = `Minimum ${condition} characters required`;
+            fieldErrors[id] = `Minimum ${condition.minLength} characters required`;
           }
         }
         
         if (type === 'multiSelect') {
-          if (value.length < (condition.minItems)) {
-            fieldErrors[id] = `Select at least ${condition} items`;
+          if (value.length < (condition?.minItems)) {
+            fieldErrors[id] = `Select at least ${condition.minItems} items`;
           }
         }
 
