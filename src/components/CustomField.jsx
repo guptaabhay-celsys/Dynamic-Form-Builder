@@ -1,7 +1,7 @@
 import React from 'react';
-import {Box, InputLabel, MenuItem, FormControl, Select, TextField, OutlinedInput, Chip} from '@mui/material';
+import {Box, InputLabel, MenuItem, FormControl, Select, TextField, OutlinedInput, Chip, Input, Typography} from '@mui/material';
 
-const CustomField = ({ field, value, onChange }) => {
+const CustomField = ({ field, value, onChange, error }) => {
   const { id, type, required, items } = field;
 
   const ITEM_HEIGHT = 48;
@@ -22,9 +22,11 @@ const CustomField = ({ field, value, onChange }) => {
           fullWidth
           defaultValue={value}
           onChange={(e) => onChange(e, field)}
+          error={!!error}
           required={required}
           variant="outlined"
         />
+        {error && <Typography variant='body1' sx={{fontSize: '10px', color: 'red', marginBottom: '30px'}}>{error}</Typography>}
       </Box>
     );
   }
@@ -32,7 +34,7 @@ const CustomField = ({ field, value, onChange }) => {
   if (type === 'singleSelect') {
     return (
       <Box sx={{ minWidth: 120, my: 1 }}>
-        <FormControl fullWidth>
+        <FormControl fullWidth error={!!error}>
           <InputLabel>{field.value}</InputLabel>
           <Select
             value={value}
@@ -47,6 +49,7 @@ const CustomField = ({ field, value, onChange }) => {
             ))}
           </Select>
         </FormControl>
+        {error && <Typography variant='body1' sx={{fontSize: '10px', color: 'red', marginBottom: '30px'}}>{error}</Typography>}
       </Box>
     );
   }
@@ -55,7 +58,7 @@ const CustomField = ({ field, value, onChange }) => {
       
     return (
       <Box sx={{ my: 1 }}>
-        <FormControl fullWidth>
+        <FormControl fullWidth error={!!error}>
           <InputLabel>{field.value}</InputLabel>
           <Select
             multiple
@@ -79,6 +82,7 @@ const CustomField = ({ field, value, onChange }) => {
             ))}
           </Select>
         </FormControl>
+        {error && <Typography variant='body1' sx={{fontSize: '10px', color: 'red', marginBottom: '30px'}}>{error}</Typography>}
       </Box>
     );
   }

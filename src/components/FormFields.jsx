@@ -4,6 +4,7 @@ import { Button } from '@mui/material';
 
 const FormFields = ({ fieldsData }) => {
   const [fieldValue, setFieldValue] = useState({});
+  const [errors, setErrors] = useState({});
 
   const handleChange = (event, field) => {
     const { id, type, action } = field;
@@ -14,23 +15,62 @@ const FormFields = ({ fieldsData }) => {
     } else {
       value = event.target.value;
     }
+    setFieldValue((prev) => ({...prev, [id]: value}))
+    setErrors((prev) => ({...prev, [id]: ''}));
 
-    setFieldValue((prev) => ({
-      ...prev,
-      [id] : value,
-    }));
-    
-    if(action){
+    if (action) {
       action();
     }
   };
 
+  const validateFields = () => {
+    const fieldErrors = {};
+
+    fieldsData.forEach((field) => {
+      const { id, type, condition } = field;
+      const value = fieldValue[id];
+
+      if (Object.keys(condition).length > 0) {
+        if (type === 'text') {
+          if (value.trim().length < (condition.minLength)) {
+            fieldErrors[id] = `Minimum ${condition} characters required`;
+          }
+        }
+        
+        if (type === 'multiSelect') {
+          if (value.length < (condition.minItems)) {
+            fieldErrors[id] = `Select at least ${condition} items`;
+          }
+        }
+
+        if (type === 'singleSelect') {
+          if (value === '') {
+            fieldErrors[id] = `Please select a value`;
+          }
+        }
+      }
+    });
+
+    setErrors(fieldErrors);
+
+    if(Object.keys(fieldErrors).length === 0)
+      return true;
+    else 
+      return false;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!validateFields()) {
+      return;
+    }
     console.log('Form Submitted:', fieldValue);
 
     const buttonField = fieldsData.find((field) => field.type === 'button');
+    if (buttonField?.action) {
       buttonField.action();
+    }
   };
 
   return (
@@ -45,7 +85,7 @@ const FormFields = ({ fieldsData }) => {
         }
 
         return (
-          <CustomField key={field.id} field={field} value={fieldValue[field.id] || (field.type === 'multiSelect' ? [] : (field.type === 'text') ? field.value : "")} onChange={(e) => handleChange(e, field)} />
+          <CustomField key={field.id} field={field} value={fieldValue[field.id] || (field.type === 'multiSelect' ? [] : '')} onChange={(e) => handleChange(e, field)} error={errors[field.id]} />
         );
       })}
     </form>
